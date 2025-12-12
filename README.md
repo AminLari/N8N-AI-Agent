@@ -6,8 +6,6 @@ The system searches for job postings on LinkedIn, customizes a user-provided cov
 
 <p> <img src="https://github.com/user-attachments/assets/4f2a87e9-97dd-4516-bd7a-ae4ff723ddc5" width="1000"> </p> 
 
----
-
 ## Features
 - **Automated Job Search:** Scrapes or fetches LinkedIn job listings via API.
 - **AI-Generated Cover Letters:** Uses Mistral-3 3B to personalize cover letters for each role.
@@ -17,16 +15,11 @@ The system searches for job postings on LinkedIn, customizes a user-provided cov
 - **Email Delivery:** Sends the cover-letter files to the user’s email.
 - **Fully Automated Workflow:** Powered by n8n's scheduled triggers and modular nodes.
 
----
-
 ## File Structure
 - `workflow.json` — Exported n8n workflow.
-- `templates/` — User-provided cover-letter templates.
-- - `docs/` — Agent-generated demo projects.
+- `docs/` — Agent-generated demo projects.
 - `AI Agent Workflow.jpg` — Workflow diagram.
 - `README.md` — Documentation for the repository.
-
----
 
 ## Installation
 
@@ -38,14 +31,13 @@ Make sure you have the following:
 - **Mistral-3 3B API key**
 - **SMTP/Gmail credentials** for sending emails
 
----
-
 ### Steps
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/YourUsername/AI-Job-Application-Assistant.git
-   cd AI-Job-Application-Assistant
+   git clone https://github.com/YourUsername/LinkedIn-Job-Search-AI-Agent.git
+   cd LinkedIn-Job-Search-AI-Agent
+
 2. **Import the workflow into n8n:**
    Open n8n → Import Workflow
    Upload workflow.json
@@ -60,7 +52,7 @@ Make sure you have the following:
 ## Usage
 
 1. **Provide your base cover-letter template**  
-   Place your general-purpose cover letter inside the `templates/` directory and reference it inside the “Rewrite Cover Letter” node in n8n.
+   Place your general-purpose cover letter inside the “Rewrite Cover Letter” node in n8n.
 
 2. **Run the workflow manually or schedule it**  
    Use n8n’s Cron node to execute the pipeline daily or weekly.
@@ -79,8 +71,6 @@ Make sure you have the following:
    - **Inbox:** Each job produces a personalized `.txt` cover letter  
    - **GitHub:** A new demo project is automatically uploaded for every job  
 
----
-
 ## Results
 
 The system automatically produces the following for each job posting:
@@ -88,11 +78,10 @@ The system automatically produces the following for each job posting:
 - A **uniquely tailored cover letter**  
 - A **job-specific demo project** showcasing relevant skills  
 - An **uploaded GitHub repository** for each generated project  
-- An **emailed `.txt` file** containing the finalized cover letter  
+- An **emailed `.txt` file** containing the customized cover letter  
 
 These outputs significantly strengthen job applications by increasing personalization and demonstrating hands-on ability.
 
----
 
 ## 📞 Contact
 
