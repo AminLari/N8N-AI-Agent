@@ -1,0 +1,541 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 17
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1408,
+        448
+      ],
+      "id": "9f466e31-1322-4d0e-9795-3e67f8b468f5",
+      "name": "Schedule Trigger",
+      "notes": "5:00 PM Everyday"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        656
+      ],
+      "id": "37713d91-6021-4e01-b69f-7e7ca13408cb"
+    },
+    {
+      "parameters": {
+        "url": "=",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"queries\": [\n    {\n      \"keywords\": \"machine learning engineer\",\n      \"location\": \"Canada\"\n    }\n  ],\n  \"maxItems\": 20,\n  \"rows\": 20,\n  \"proxy\": {\n    \"useApifyProxy\": true,\n    \"apifyProxyGroups\": [\"RESIDENTIAL\"]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1184,
+        448
+      ],
+      "id": "7a0f7e01-d436-452a-b72a-1e53f2b3eca6",
+      "name": "Search Jobs"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2285c06c-2f81-44ff-9878-0979a85472cf",
+              "name": "title",
+              "value": "={{$json[\"title\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "82e31db4-0f69-456a-9c5c-77ba73db8cf5",
+              "name": "companyName",
+              "value": "={{$json[\"companyName\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "84480fa6-9572-4c5c-a6c3-139d4c673d6b",
+              "name": "location",
+              "value": "={{$json[\"location\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "75639361-1200-422f-84b7-0c45c4ecdab1",
+              "name": "workType",
+              "value": "={{$json[\"workType\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "092276c1-41b4-4d59-b7db-4c85372128c9",
+              "name": "postedTime",
+              "value": "={{$json[\"postedTime\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "616759bc-8ed8-4e96-97ee-837a4339204a",
+              "name": "description",
+              "value": "={{$json[\"descriptionHtml\"].replace(/<[^>]*>/g, \"\")}}",
+              "type": "string"
+            },
+            {
+              "id": "96e605e2-ec6e-4a2a-9810-8def1246f634",
+              "name": "applyURL",
+              "value": "={{$json[\"applyUrl\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -992,
+        448
+      ],
+      "id": "e79fd4a4-e3ce-462c-964b-69546c2beaf8",
+      "name": "Data Processing"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -784,
+        448
+      ],
+      "id": "d8d46f7c-04f4-44b6-bbe3-8d8013769432",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "ministral-3:14b",
+          "mode": "list",
+          "cachedResultName": "ministral-3:14b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are rewriting this cover letter:\n[Your Name] \n[Your Location]\n[Your Number]\n[Your Email]\n\n[Date]\n\nHiring Manager\n[company name]\n[location]\n\n[Cover Letter Body]\n\nBest regards,\n[Your name]\n\n- Modify the letter to match the following job posting:\n\nTitle: {{$json.title}}\nCompany: {{$json.companyName}}\nLocation: {{$json.location}}\n\nJob Description: {{$json.description}}\n\n- Maintain a professional style.\n- Output only the rewritten cover letter in plain text."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        432
+      ],
+      "id": "35c4b385-8375-4b11-914d-a7218fe9ae6e",
+      "name": "Rewrite Cover Letter",
+      "credentials": {
+        "ollamaApi": {
+          "id": "gX0VpfNZ9G9sgOTN",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "83d56ecc-fdfb-410f-a9f7-0640123f6553",
+              "name": "coverLetter",
+              "value": "={{$json.content}}",
+              "type": "string"
+            },
+            {
+              "id": "323b9c31-b4a0-4d22-9228-7e924a0aec93",
+              "name": "title",
+              "value": "={{ $node[\"Data Processing\"].json[\"title\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "12d294ef-fd66-4450-99a2-bfe3aeace14b",
+              "name": "companyName",
+              "value": "={{ $node[\"Data Processing\"].json[\"companyName\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        432
+      ],
+      "id": "0d091e16-895d-4ab6-b58d-b1f51daf6a0f",
+      "name": "Recover Job Title and Company Name"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "={{ \"coverLetter\" }}",
+        "binaryPropertyName": "={{ $json[\"title\"]}}-{{ $json[\"companyName\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        432
+      ],
+      "id": "0a68ec42-e330-4034-a90c-9a30659258ee",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "83d56ecc-fdfb-410f-a9f7-0640123f6553",
+              "name": "file",
+              "value": "={{ $node[\"Data Processing\"].json[\"title\"] }}-{{ $node[\"Data Processing\"].json[\"companyName\"] }}",
+              "type": "binary"
+            },
+            {
+              "id": "323b9c31-b4a0-4d22-9228-7e924a0aec93",
+              "name": "title",
+              "value": "={{ $node[\"Data Processing\"].json[\"title\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "12d294ef-fd66-4450-99a2-bfe3aeace14b",
+              "name": "companyName",
+              "value": "={{ $node[\"Data Processing\"].json[\"companyName\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        432
+      ],
+      "id": "948d4114-bf5f-495b-b2ae-fdf4f5b22433",
+      "name": "Recover Job Title and Company Name1"
+    },
+    {
+      "parameters": {
+        "subject": "={{ $node[\"Data Processing\"].json[\"title\"] }} - {{ $node[\"Data Processing\"].json[\"companyName\"] }}",
+        "message": "=Hi,\nPlease find the cover letter for {{ $node[\"Data Processing\"].json[\"title\"] }} - {{ $node[\"Data Processing\"].json[\"companyName\"] }} attached.\nBest,\nYour AI Agent",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "file"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        432
+      ],
+      "id": "f179584b-14ea-4df1-b6c9-d982571e5b32",
+      "name": "Email Cover Letter Files",
+      "webhookId": "9477de96-4fbd-4b99-9ca3-809263c9448f"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "ministral-3:3b",
+          "mode": "list",
+          "cachedResultName": "ministral-3:3b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Read the job description found in {{ $json.description }}. Pick a small but impressive demo project relevant to the role {{ $json.title }} at {{ $json.companyName }}.\n- Return exactly one file named README.md, with keys being filename and value being the content.\n- Do not include explanations or markdown fences.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        16
+      ],
+      "id": "d4b124b3-c249-4963-bd4f-24391260b148",
+      "name": "Create Demo Project"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "filePath": "=docs/README{{$json.index}}.md",
+        "fileContent": "={{ $json.content }}",
+        "commitMessage": "README file uploaded."
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8dcd0f84-1ec5-4181-b799-29a295178c03",
+      "name": "Create a file",
+      "webhookId": "60be6500-bdd3-4389-be38-483a127573b5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "d2798b33-40ab-47c5-9388-7079e28fe3af",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        0,
+        224
+      ],
+      "id": "700436fb-2ff3-4a84-bf5e-b9afdc3a0fe0"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Add index to each item\nconst items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n  items[i].json.index = i;\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "500b7e75-0ace-419c-8b39-f2a6fb5b4d95",
+      "name": "Add Index1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Jobs": {
+      "main": [
+        [
+          {
+            "node": "Data Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Processing": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Rewrite Cover Letter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Demo Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rewrite Cover Letter": {
+      "main": [
+        [
+          {
+            "node": "Recover Job Title and Company Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recover Job Title and Company Name": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Recover Job Title and Company Name1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recover Job Title and Company Name1": {
+      "main": [
+        [
+          {
+            "node": "Email Cover Letter Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Demo Project": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Add Index1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Index1": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "",
+  "meta": {
+    "instanceId": "f074d2df0fa9946f41c07944bf7ed0d1a8cc190699bae7d6d9ff1d4b8bd94719"
+  },
+  "tags": []
+}
